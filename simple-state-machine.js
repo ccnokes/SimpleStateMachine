@@ -79,6 +79,7 @@ SimpleStateMachine.prototype = {
 			return state.name;
 		});
 
+		//wire up subscribers to states that we're deferred until initialization
 		if(this.subscribeQueue && this.subscribeQueue.length > 0) {
 			var self = this;
 			this.subscribeQueue.forEach(function(item) {
@@ -112,6 +113,13 @@ SimpleStateMachine.prototype = {
 	 */
 	getCurrentState: function() {
 		return this.currentState.name;
+	},
+
+	/**
+	 * get previous state
+	 */
+	getPreviousState: function() {
+		return this.history[this.history.length - 2];
 	},
 
 	/**
@@ -210,7 +218,7 @@ SimpleStateMachine.prototype = {
 
 if (typeof exports === 'object') {
 	// CommonJS
-	module.exports = SimpleStateMachine;
+	exports = module.exports = SimpleStateMachine;
 } 
 else {
 	// browser global
