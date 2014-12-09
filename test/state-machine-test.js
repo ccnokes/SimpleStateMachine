@@ -1,12 +1,10 @@
 
 describe('state-machine', function() {
 	
-	var SM,
+	var SSM,
 		states,
-		StateMachine = require('../../src/models/state-machine.js');
-
-	var onEnterMock = jasmine.createSpy('onEnterMock');
-	var onEndMock = jasmine.createSpy('onEndMock');
+		onEnterMock = jasmine.createSpy('onEnterMock'),
+		onLeaveMock = jasmine.createSpy('onLeaveMock');
 
 
 	beforeEach(function() {
@@ -14,123 +12,121 @@ describe('state-machine', function() {
 			{
 				name: 'state1',
 				initial: true,
-				handler: onEnterMock,
-				onEnd: onEndMock,
-				events: {
-					state2: 'state2'
-				}
+				onEnter: onEnterMock,
+				onLeave: onLeaveMock,
+				states: ['state2']
 			},
 			{
 				name: 'state2',
-				onEnd: onEndMock,
-				events: {
-					state3: 'state3'
-				}
+				onLeave: onLeaveMock,
+				states: ['state3']
 			},
 			{
 				name: 'state3',
-				handler: onEnterMock,
-				onEnd: onEndMock,
-				events: {
-					state1: 'state1'
-				}
+				onEnter: onEnterMock,
+				onLeave: onLeaveMock,
+				states: ['state1']
 			}
 		];
 
-		SM = new StateMachine(states);
+		SSM = new SimpleStateMachine(states);
 
 	});
 
 	it('should start at the initial event', function() {
-		expect( SM.getStatus() ).toEqual('state1');
+		expect( SSM.getCurrentState() ).toEqual('state1');
 	});
 
-	it('sendEvent should change the state only to a state defined in the current state\'s state event object', function() {
-		SM.goToState('state2');
-		expect( SM.getStatus() ).toEqual('state2');
+	it('goToState should change the state only to a state defined in the current state\'s state object', function() {
+		SSM.goToState('state2');
+		expect( SSM.getCurrentState() ).toEqual('state2');
 
 		//invalid because we're now on state2, which won't allow us state1
-		SM.goToState('state1');
-		expect( SM.getStatus() ).toEqual('state2');
+		SSM.goToState('state1');
+		expect( SSM.getCurrentState() ).toEqual('state2');
 	});
 
-	it('should call handler functions on enter and onEnd functions on out', function() {
+	it('goToState should update history', function() {
+		SSM.goToState('state2');
+		expect( SSM.history.length ).toEqual(2);
+	});
+
+	it('should call onEnter functions on enter and onLeave functions on leave', function() {
 		onEnterMock.calls.reset();
-		onEndMock.calls.reset();
+		onLeaveMock.calls.reset();
 
 		//state2 has no enter handler
-		SM.goToState('state2');
-		expect( onEndMock ).toHaveBeenCalled();
-		onEndMock.calls.reset();
+		SSM.goToState('state2');
+		expect( onLeaveMock ).toHaveBeenCalled();
+		onLeaveMock.calls.reset();
 
 		//state 3 has both
-		SM.goToState('state3');
-		expect( onEndMock ).toHaveBeenCalled();
+		SSM.goToState('state3');
+		expect( onLeaveMock ).toHaveBeenCalled();
 		expect( onEnterMock ).toHaveBeenCalled();
 
 		onEnterMock.calls.reset();
-		onEndMock.calls.reset();
+		onLeaveMock.calls.reset();
 
-		SM.goToState('state1');
-		expect( onEndMock ).toHaveBeenCalled();
+		SSM.goToState('state1');
+		expect( onLeaveMock ).toHaveBeenCalled();
 		expect( onEnterMock ).toHaveBeenCalled();
 	});
 
 	it('subscribed functions should be called on state change', function() {
 		var sub = jasmine.createSpy('sub');
-		SM.subscribe('state2', sub);
-		SM.goToState('state2');
+		SSM.subscribeToState(['state2'], sub);
+		SSM.goToState('state2');
 		expect(sub).toHaveBeenCalled();
 
 		sub.calls.reset();
-		SM.subscribe('state3', sub);
-		SM.goToState('state3');
+		SSM.subscribeToState(['state3'], sub);
+		SSM.goToState('state3');
 		expect(sub).toHaveBeenCalled();
 
 		sub.calls.reset();
-		SM.subscribe('state1', sub);
-		SM.goToState('state1');
+		SSM.subscribeToState(['state1'], sub);
+		SSM.goToState('state1');
 		expect(sub).toHaveBeenCalled();
 	});
 
-	it('subscribe should handle a function that subscribes to 2 or more events', function() {
+	it('subscribeToState should handle a function that subscribes to 2 or more events', function() {
 		var sub = jasmine.createSpy('sub');
 		
-		SM.subscribe('state1 state2 state3', sub);
+		SSM.subscribeToState(['state1', 'state2', 'state3'], sub);
 		
-		SM.goToState('state2');
+		SSM.goToState('state2');
 		expect(sub).toHaveBeenCalled();
 		sub.calls.reset();
 		
-		SM.goToState('state3');
+		SSM.goToState('state3');
 		expect(sub).toHaveBeenCalled();
 		sub.calls.reset();
 
-		SM.goToState('state1');
+		SSM.goToState('state1');
 		expect(sub).toHaveBeenCalled();
-
 	});
 
 	it('can be initialized without any states', function() {
-		var SM2 = new StateMachine();
+		var SM2 = new SimpleStateMachine();
 		expect(SM2).toBeDefined();
 
 		SM2.setStates(states);
-		expect( SM2.getStatus() ).toEqual( SM2.currentState.name );		
+		expect( SM2.getCurrentState() ).toEqual( SM2.currentState.name );
 	});
 
 	it('nextState should advance to the next state', function() {
-		expect(SM.getStatus()).toEqual('state1');
+		expect(SSM.getCurrentState()).toEqual('state1');
 		
-		SM.nextState();
-		expect(SM.getStatus()).toEqual('state2');
+		SSM.nextState();
+		expect(SSM.getCurrentState()).toEqual('state2');
 		
-		SM.nextState();
-		expect(SM.getStatus()).toEqual('state3');
+		SSM.nextState();
+		expect(SSM.getCurrentState()).toEqual('state3');
 		
 		//go to first state if previous one was the last state
-		SM.nextState();
-		expect(SM.getStatus()).toEqual('state1');
+		SSM.nextState();
+		expect(SSM.getCurrentState()).toEqual('state1');
 	});
 
 

@@ -12,9 +12,11 @@ function SimpleStateMachine(states) {
 		return new SimpleStateMachine(states);
 	}
 
+	this.initialized = false;
+	this.subscribeQueue = []; //for when we want to subscribe to states before they're initialized
 	this.states = states || [];
 	this.history = [];
-	this.currentState;
+	this.currentState = {};
 
 	//if states are passed into the constructor, assume we want to auto-initialize it
 	if(this.states.length > 0) {
@@ -24,7 +26,7 @@ function SimpleStateMachine(states) {
 }
 
 /**
- * private fn, transitions to a new state
+ * Private fn, transitions to a new state. Does the heay lifting
  * @param {object} stateObj - state object we want to go to
  * @param {object} optParams - object to pass to onEnter fn
  */
@@ -39,7 +41,7 @@ function goToStateInternal(stateObj, optParams) {
 	//set to new state
 	this.currentState = stateObj;
 
-	//track in history
+	//track in history, keep track of no. of visits
 	this.history.push(stateObj);
 	if(!stateObj.visitedCount) {
 		stateObj.visitedCount = 1;
@@ -63,22 +65,6 @@ function goToStateInternal(stateObj, optParams) {
 	}
 }
 
-/**
- * private fn, iterates through states and returns one that matches the provided stateName
- * @param {string} stateName - name of the state to get
- * @return {object} the state object
- */
-function pluckState(stateName) {
-	var stateToReturn;
-	for(var i = 0; i < this.states.length; i++) {
-		if(this.states[i].name === stateName) {
-			stateToReturn = this.states[i];
-			break;
-		}
-	}
-	return stateToReturn;
-}
-
 
 SimpleStateMachine.prototype = {
 
@@ -86,10 +72,19 @@ SimpleStateMachine.prototype = {
 	 * starts everything in the state machine
 	 */
 	init: function() {
+		this.initialized = true;
+
 		//get all state names
-		var allStateNames = this.states.map(function(state) {
+		this.allStateNames = this.states.map(function(state) {
 			return state.name;
 		});
+
+		if(this.subscribeQueue && this.subscribeQueue.length > 0) {
+			var self = this;
+			this.subscribeQueue.forEach(function(item) {
+				self.subscribeToState.apply(self, item);
+			});
+		}
 
 		//start initial state
 		for( var i = 0; i < this.states.length; i++) {			
@@ -99,7 +94,7 @@ SimpleStateMachine.prototype = {
 			}
 			//fix up any states that use a wildcard
 			if(state.states && state.states[0] === '*') {
-				state.states = allStateNames;
+				state.states = this.allStateNames;
 			}
 		}
 	},
@@ -117,6 +112,22 @@ SimpleStateMachine.prototype = {
 	 */
 	getCurrentState: function() {
 		return this.currentState.name;
+	},
+
+	/**
+	 * iterates through states and returns one that matches the provided stateName
+	 * @param {string} stateName - name of the state to get
+	 * @return {object} the state object
+	 */
+	getState: function(stateName) {
+		var stateToReturn;
+		for(var i = 0; i < this.states.length; i++) {
+			if(this.states[i].name === stateName) {
+				stateToReturn = this.states[i];
+				break;
+			}
+		}
+		return stateToReturn;
 	},
 
 	/**
@@ -139,7 +150,7 @@ SimpleStateMachine.prototype = {
 			nextIndex = 0;
 		}
 		
-		this.goToStateInternal.call(this, this.states[nextIndex], optParams);
+		goToStateInternal.call(this, this.states[nextIndex], optParams);
 	},
 
 	/**
@@ -149,11 +160,8 @@ SimpleStateMachine.prototype = {
 	 */
 	goToState: function(stateName, optParams){
 		if(this.currentState.states.indexOf(stateName) > -1) {
-			var newState = pluckState.call(this, stateName);
+			var newState = this.getState(stateName);
 			goToStateInternal.call(this, newState, optParams);
-		}
-		else {
-			console.error(stateName, 'state does not exist');
 		}
 	},
 
@@ -163,23 +171,37 @@ SimpleStateMachine.prototype = {
 	 * @param {function} cb - callback function
 	 */
 	subscribeToState: function(stateNames, cb) {
-		var self = this;
+		//this allows for events to be subscribed to before they've been initialized
+		if(!this.initialized) {
+			this.subscribeQueue.push([stateNames, cb]);
+		}
+		else {
+			var self = this;
+			var statesArr = [];
 
-		stateNames.forEach(function(stateName) {
-			var stateObj = pluckState.call(self, stateName);
-			if(stateObj && typeof cb === 'function') {
-				
-				//create prop if it doesn't exist
-				if(!stateObj.subscribers) {
-					stateObj.subscribers = [];
-				}
-				//push to array
-				stateObj.subscribers.push(cb);
+			if(stateNames[0] === '*') {
+				statesArr = this.allStateNames;
 			}
 			else {
-				console.error('can\'t subscribe to ', stateName);
+				statesArr = stateNames;	
 			}
-		});
+
+			statesArr.forEach(function(stateName) {
+				var stateObj = self.getState(stateName);
+				if(stateObj && typeof cb === 'function') {
+					
+					//create prop if it doesn't exist
+					if(!stateObj.subscribers) {
+						stateObj.subscribers = [];
+					}
+					//push to array
+					stateObj.subscribers.push(cb);
+				}
+				else {
+					throw new Error('can\'t subscribe to ', stateName);
+				}
+			});
+		}
 	}
 };
 

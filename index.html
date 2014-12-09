@@ -1,17 +1,25 @@
 <html>
 <body>
 
-<script src="src/state-machine.js"></script>
+<h3>Test page for SimpleStateMachine.</h3>
+<p>Current state: <span id="state"></span></p>
+
+<script src="simple-state-machine.js"></script>
 <script>
 
-var sm = new SimpleStateMachine([
+var sm = new SimpleStateMachine();
+
+sm.subscribeToState(['*'], function(state) {
+	document.getElementById('state').innerHTML = state.name;
+});
+
+sm.setStates([
 	{
 		name: 'loading',
 		initial: true,
 		onEnter: function() { console.log('entered loading'); },
 		onLeave: function() { console.log('left loading'); },
 		states: [ '*' ]
-		
 	},
 	{
 		name: 'loggedIn',
@@ -26,10 +34,6 @@ var sm = new SimpleStateMachine([
 		states: [ 'loggedIn' ]
 	},
 ]);
-
-sm.subscribeToState(['loggedIn'], function(state) {
-	console.log('blergh');
-});
 
 setTimeout(function() {
 	sm.goToState('loggedIn');

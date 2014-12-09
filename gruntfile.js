@@ -1,18 +1,22 @@
 module.exports = function(grunt) {
 	
 	require('load-grunt-tasks')(grunt);
-	
+
 	grunt.initConfig({
 		
 		jasmine: {
 			all: {
-				src: [],
-				options: {}
+				src: ['simple-state-machine.js'],
+				options: {
+					specs: 'test/*.js'
+				}
 			}
 		},
 
 		jshint: {
-
+			files: {
+				src: ['*.js']
+			}
 		},
 
 		connect: {

@@ -2,7 +2,7 @@
   "name": "SimpleStateMachine",
   "version": "0.0.1",
   "description": "Super simple Javascript state machine. ",
-  "main": "index.js",
+  "main": "simple-state-machine.js",
   "scripts": {
     "test": "grunt test"
   },
@@ -23,8 +23,8 @@
     "bower": "^1.3.12",
     "grunt": "^0.4.5",
     "grunt-connect": "^0.2.0",
+    "grunt-contrib-jasmine": "^0.8.1",
     "grunt-contrib-jshint": "^0.10.0",
-    "grunt-jasmine": "^0.1.0",
     "load-grunt-tasks": "^1.0.0"
   }
 }

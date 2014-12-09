@@ -6,7 +6,7 @@
     "Cameron Nokes <ccnokes@gmail.com>"
   ],
   "description": "Super simple Javascript state machine.",
-  "main": "index.js",
+  "main": "simple-state-machine.js",
   "keywords": [
     "state-machine"
   ],
