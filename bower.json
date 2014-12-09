@@ -1,0 +1,21 @@
+{
+  "name": "SimpleStateMachine",
+  "version": "0.0.1",
+  "homepage": "https://github.com/ccnokes/SimpleStateMachine",
+  "authors": [
+    "Cameron Nokes <ccnokes@gmail.com>"
+  ],
+  "description": "Super simple Javascript state machine.",
+  "main": "index.js",
+  "keywords": [
+    "state-machine"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

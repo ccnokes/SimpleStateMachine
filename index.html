@@ -1,0 +1,40 @@
+<html>
+<body>
+
+<script src="src/state-machine.js"></script>
+<script>
+
+var sm = new SimpleStateMachine([
+	{
+		name: 'loading',
+		initial: true,
+		onEnter: function() { console.log('entered loading'); },
+		onLeave: function() { console.log('left loading'); },
+		states: [ '*' ]
+		
+	},
+	{
+		name: 'loggedIn',
+		onEnter: function() { console.log('entered loggedIn'); },
+		onLeave: function() { console.log('left loggedIn'); },
+		states: [ 'loggedOut' ]
+	},
+	{
+		name: 'loggedOut',
+		onEnter: function() { console.log('entered loggedOut'); },
+		onLeave: function() { console.log('left loggedOut'); },
+		states: [ 'loggedIn' ]
+	},
+]);
+
+sm.subscribeToState(['loggedIn'], function(state) {
+	console.log('blergh');
+});
+
+setTimeout(function() {
+	sm.goToState('loggedIn');
+}, 500);
+
+</script>
+</body>
+</html>
