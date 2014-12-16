@@ -41,13 +41,13 @@ function AuthService() {
 	]);
 }
 
-AuthService.prototype.logIn(function() {
-	state.goToState('loggedIn');
-});
+AuthService.prototype.logIn = function() {
+	this.state.goToState('loggedIn');
+};
 
-AuthService.prototype.logOut(function() {
-	state.goToState('loggedOut');
-});
+AuthService.prototype.logOut = function() {
+	this.state.goToState('loggedOut');
+};
 
 //elsewhere in your code....
 AuthService.state.subscribeToState(['loggedIn', 'loggedOut'], function(state) {
