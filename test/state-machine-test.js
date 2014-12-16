@@ -34,21 +34,40 @@ describe('state-machine', function() {
 	});
 
 	it('should start at the initial event', function() {
-		expect( SSM.getCurrentState() ).toEqual('state1');
+		expect( SSM.getCurrentState() ).toEqual(states[0]);
+	});
+
+	it('getState should return a state object', function() {
+		expect( SSM.getState('state2') ).toEqual( states[1] );
+	});
+
+	it('isState should return bool if the current state matches the given state name', function() {
+		expect( SSM.isState('state1') ).toEqual(true);
+	});
+
+	it('getPreviousState should return the previous state', function() {
+		expect( SSM.getPreviousState() ).toEqual(undefined);
+		SSM.goToState('state2');
+		expect( SSM.getPreviousState() ).toEqual(states[0]);
+	});
+
+	it('getPossibleStates should return the states the current state can go to', function() {
+		expect( SSM.getPossibleStates() ).toEqual(states[0].states);
 	});
 
 	it('goToState should change the state only to a state defined in the current state\'s state object', function() {
 		SSM.goToState('state2');
-		expect( SSM.getCurrentState() ).toEqual('state2');
+		expect( SSM.getCurrentState() ).toEqual(states[1]);
 
 		//invalid because we're now on state2, which won't allow us state1
 		SSM.goToState('state1');
-		expect( SSM.getCurrentState() ).toEqual('state2');
+		expect( SSM.getCurrentState() ).toEqual(states[1]);
 	});
 
-	it('goToState should update history', function() {
+	it('goToState should update history and visitedCount', function() {
 		SSM.goToState('state2');
 		expect( SSM.history.length ).toEqual(2);
+		expect( SSM.getCurrentState().visitedCount ).toEqual(1);
 	});
 
 	it('should call onEnter functions on enter and onLeave functions on leave', function() {
@@ -112,21 +131,21 @@ describe('state-machine', function() {
 		expect(SM2).toBeDefined();
 
 		SM2.setStates(states);
-		expect( SM2.getCurrentState() ).toEqual( SM2.currentState.name );
+		expect( SM2.getCurrentState().name ).toEqual( SM2.currentState.name );
 	});
 
 	it('nextState should advance to the next state', function() {
-		expect(SSM.getCurrentState()).toEqual('state1');
+		expect(SSM.getCurrentState()).toEqual(states[0]);
 		
 		SSM.nextState();
-		expect(SSM.getCurrentState()).toEqual('state2');
+		expect(SSM.getCurrentState()).toEqual(states[1]);
 		
 		SSM.nextState();
-		expect(SSM.getCurrentState()).toEqual('state3');
+		expect(SSM.getCurrentState()).toEqual(states[2]);
 		
 		//go to first state if previous one was the last state
 		SSM.nextState();
-		expect(SSM.getCurrentState()).toEqual('state1');
+		expect(SSM.getCurrentState()).toEqual(states[0]);
 	});
 
 

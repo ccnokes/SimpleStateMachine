@@ -43,7 +43,7 @@ function goToStateInternal(stateObj, optParams) {
 
 	//track in history, keep track of no. of visits
 	this.history.push(stateObj);
-	if(!stateObj.visitedCount) {
+	if(stateObj.visitedCount === 0) {
 		stateObj.visitedCount = 1;
 	}
 	else {
@@ -90,12 +90,17 @@ SimpleStateMachine.prototype = {
 		//start initial state
 		for( var i = 0; i < this.states.length; i++) {			
 			var state = this.states[i];
-			if (state.initial) {
-				goToStateInternal.call(this, state);
-			}
+			
+			//set this property on each state
+			state.visitedCount = 0;
+			
 			//fix up any states that use a wildcard
 			if(state.states && state.states[0] === '*') {
 				state.states = this.allStateNames;
+			}
+
+			if(state.initial) {
+				goToStateInternal.call(this, state);
 			}
 		}
 	},
@@ -109,10 +114,19 @@ SimpleStateMachine.prototype = {
 	},
 
 	/**
-	 * returns current state's name
+	 * returns current state object
 	 */
 	getCurrentState: function() {
-		return this.currentState.name;
+		return this.currentState;
+	},
+
+	/**
+	 * checks if current state name matches provided stateName
+	 * @type {string} stateName
+	 * @return {boolean}
+	 */
+	isState: function(stateName) {
+		return this.getCurrentState().name === stateName;
 	},
 
 	/**
