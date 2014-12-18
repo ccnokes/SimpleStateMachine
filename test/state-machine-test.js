@@ -46,7 +46,7 @@ describe('state-machine', function() {
 	});
 
 	it('getPreviousState should return the previous state', function() {
-		expect( SSM.getPreviousState() ).toEqual(undefined);
+		expect( SSM.getPreviousState() ).toEqual(null);
 		SSM.goToState('state2');
 		expect( SSM.getPreviousState() ).toEqual(states[0]);
 	});

@@ -25,6 +25,28 @@ function SimpleStateMachine(states) {
 
 }
 
+
+/**
+ * Private, handles tracking and history logic
+ * @param  {object}
+ */
+function trackHistory(stateObj) {
+	//tack number of visits to current state
+	stateObj.visitedCount++;
+
+	//track enter and leave times on state object
+	var visitObj = {
+		enterTime: new Date(),
+		stateName: stateObj.name
+	};
+
+	//track in state machine history, make copy of object (omits functions)
+	this.history.push(visitObj);
+
+	return stateObj;
+}
+
+
 /**
  * Private fn, transitions to a new state. Does the heay lifting
  * @param {object} stateObj - state object we want to go to
@@ -38,14 +60,10 @@ function goToStateInternal(stateObj, optParams) {
 		this.currentState.onLeave(stateObj);
 	}
 	
+	trackHistory.call(this, stateObj);
+
 	//set to new state
 	this.currentState = stateObj;
-
-	//track in history, keep track of no. of visits
-	this.history.push(stateObj);
-	if(typeof stateObj.visitedCount !== 'undefined') {
-		stateObj.visitedCount++;
-	}
 	
 	//call new state's handler fn
 	if(this.currentState.onEnter) {
@@ -88,7 +106,8 @@ SimpleStateMachine.prototype = {
 		for( var i = 0; i < this.states.length; i++) {			
 			var state = this.states[i];
 			
-			//set this property on each state
+			//set meta properties on each state
+			state.visits = [];
 			state.visitedCount = 0;
 			
 			//fix up any states that use a wildcard
@@ -130,7 +149,12 @@ SimpleStateMachine.prototype = {
 	 * get previous state
 	 */
 	getPreviousState: function() {
-		return this.history[this.history.length - 2];
+		if(this.history[this.history.length - 2]) {
+			return this.getState( this.history[this.history.length - 2].stateName );
+		}
+		else {
+			return null;
+		}
 	},
 
 	/**
