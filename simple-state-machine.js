@@ -43,10 +43,7 @@ function goToStateInternal(stateObj, optParams) {
 
 	//track in history, keep track of no. of visits
 	this.history.push(stateObj);
-	if(stateObj.visitedCount === 0) {
-		stateObj.visitedCount = 1;
-	}
-	else {
+	if(typeof stateObj.visitedCount !== 'undefined') {
 		stateObj.visitedCount++;
 	}
 	
@@ -201,6 +198,7 @@ SimpleStateMachine.prototype = {
 			var self = this;
 			var statesArr = [];
 
+			//account for wildcards
 			if(stateNames[0] === '*') {
 				statesArr = this.allStateNames;
 			}
