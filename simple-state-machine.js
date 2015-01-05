@@ -111,8 +111,8 @@ SimpleStateMachine.prototype = {
 			state.visitedCount = 0;
 			
 			//fix up any states that use a wildcard
-			if(state.states && state.states[0] === '*') {
-				state.states = this.allStateNames;
+			if(state.possibleStates && state.possibleStates[0] === '*') {
+				state.possibleStates = this.allStateNames;
 			}
 
 			if(state.initial) {
@@ -177,7 +177,7 @@ SimpleStateMachine.prototype = {
 	 * gets all of the current state's possible states that can be transitioned to
 	 */
 	getPossibleStates: function() {
-		return this.currentState.states;
+		return this.currentState.possibleStates;
 	},
 
 	/**
@@ -202,7 +202,7 @@ SimpleStateMachine.prototype = {
 	 * @param {object} optParams - optional params to pass to state's onEnter callback
 	 */
 	goToState: function(stateName, optParams){
-		if(this.currentState.states.indexOf(stateName) > -1) {
+		if(this.currentState.possibleStates.indexOf(stateName) > -1) {
 			var newState = this.getState(stateName);
 			goToStateInternal.call(this, newState, optParams);
 		}
@@ -214,6 +214,11 @@ SimpleStateMachine.prototype = {
 	 * @param {function} cb - callback function
 	 */
 	subscribeToState: function(stateNames, cb) {
+		//if its a string, make it an array
+		if(typeof stateNames === 'string') {
+			stateNames = [stateNames];
+		}
+
 		//this allows for events to be subscribed to before they've been initialized
 		if(!this.initialized) {
 			this.subscribeQueue.push([stateNames, cb]);

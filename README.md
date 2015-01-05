@@ -20,7 +20,8 @@ function AuthService() {
 	this.loading = true;
 }
 
-//...and then a mess of code to handle actions that occur on a state change, you could do this:
+//...and then a mess of code to handle actions that occur on a state change, 
+//you could do this:
 
 //Example implementation:
 
@@ -63,5 +64,6 @@ AuthService.state.subscribeToState(['loggedIn', 'loggedOut'], function(state) {
 });
 
 
-//it looks like a lot more code but in my experience this is easier to manage than the spaghetti that results from the first approach.
+//it looks like a lot more code but in my experience this is easier to 
+//manage than the spaghetti that results from the first approach.
 ```

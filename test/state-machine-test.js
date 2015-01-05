@@ -14,18 +14,18 @@ describe('state-machine', function() {
 				initial: true,
 				onEnter: onEnterMock,
 				onLeave: onLeaveMock,
-				states: ['state2']
+				possibleStates: ['state2']
 			},
 			{
 				name: 'state2',
 				onLeave: onLeaveMock,
-				states: ['state3']
+				possibleStates: ['state3']
 			},
 			{
 				name: 'state3',
 				onEnter: onEnterMock,
 				onLeave: onLeaveMock,
-				states: ['state1']
+				possibleStates: ['state1']
 			}
 		];
 
@@ -52,7 +52,7 @@ describe('state-machine', function() {
 	});
 
 	it('getPossibleStates should return the states the current state can go to', function() {
-		expect( SSM.getPossibleStates() ).toEqual(states[0].states);
+		expect( SSM.getPossibleStates() ).toEqual(states[0].possibleStates);
 	});
 
 	it('goToState should change the state only to a state defined in the current state\'s state object', function() {
@@ -123,6 +123,12 @@ describe('state-machine', function() {
 		sub.calls.reset();
 
 		SSM.goToState('state1');
+		expect(sub).toHaveBeenCalled();
+
+		//should work with a string too
+		sub.calls.reset();
+		SSM.subscribeToState('state2', sub);
+		SSM.goToState('state2');
 		expect(sub).toHaveBeenCalled();
 	});
 

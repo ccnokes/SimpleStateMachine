@@ -31,19 +31,19 @@ sm.setStates([
 		initial: true,
 		onEnter: function() { console.log('entered loading'); },
 		onLeave: function() { console.log('left loading'); },
-		states: [ '*' ]
+		possibleStates: [ '*' ]
 	},
 	{
 		name: 'loggedIn',
 		onEnter: function() { console.log('entered loggedIn'); },
 		onLeave: function() { console.log('left loggedIn'); },
-		states: [ 'loggedOut' ]
+		possibleStates: [ 'loggedOut' ]
 	},
 	{
 		name: 'loggedOut',
 		onEnter: function() { console.log('entered loggedOut'); },
 		onLeave: function() { console.log('left loggedOut'); },
-		states: [ 'loggedIn' ]
+		possibleStates: [ 'loggedIn' ]
 	}
 ]);
 
