@@ -70,6 +70,14 @@ describe('state-machine', function() {
 		expect( SSM.getImpossibleStates() ).toEqual(['state1', 'state3']);
 	});
 
+	it('goToState should pass optional params to onEnter', function() {
+		SSM.goToState('state2');
+		onEnterMock.calls.reset();
+
+		SSM.goToState('state3', {test: 123});
+		expect(onEnterMock).toHaveBeenCalledWith(SSM.getState('state3'), {test: 123});
+	});
+
 	it('goToState should change the state only to a state defined in the current state\'s possibleStates object', function() {
 		SSM.goToState('state2');
 		expect( SSM.getCurrentState().name ).toEqual('state2');

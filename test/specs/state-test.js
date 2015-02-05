@@ -38,6 +38,10 @@ describe('State', function() {
 		state.activate();
 		expect(state.visitedCount).toEqual(1);
 		expect(onEnterMock).toHaveBeenCalled();
+
+		state.activate({test: 123});
+		expect(state.visitedCount).toEqual(2);
+		expect(onEnterMock).toHaveBeenCalledWith(state, {test: 123});
 	});
 
 	it('deactivate', function() {
