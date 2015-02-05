@@ -1,9 +1,18 @@
+var banner = '/** \n' + 
+			 '* <%= pkg.name %> \n' +
+			 '* @version <%= pkg.version %> \n' + 
+			 '* @link <%= pkg.repository.url %> \n' + 
+			 '* @author <%= pkg.author %> \n' +
+			 '* @license <%= pkg.license %> \n' + 
+			 '*/ \n';
+
 module.exports = function(grunt) {
 	
 	require('load-grunt-tasks')(grunt);
 
 	grunt.initConfig({
-		
+		pkg: grunt.file.readJSON('package.json'),
+
 		jasmine: {
 			all: {
 				src: ['dist/simple-state-machine.js'],
@@ -32,10 +41,21 @@ module.exports = function(grunt) {
 			}
 		},
 
+		uglify: {
+			options: {
+				banner: banner
+			},
+			target: {
+				files: {
+					'dist/simple-state-machine.js': 'dist/simple-state-machine.js'
+				}
+			}
+		},
+
 		watch: {
 			scripts: {
 				files: ['src/*.js'],
-				tasks: ['concat']
+				tasks: ['concat', 'uglify']
 			},
 			tests: {
 				files: ['src/*.js', 'test/**/*.js'],
@@ -68,6 +88,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('default', [
 		'concat',
+		'uglify',
 		'watch:scripts'
 	]);
 

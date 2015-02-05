@@ -117,6 +117,7 @@ SimpleStateMachine.prototype = {
 				goToStateInternal.call(this, state);
 			}
 		}
+		return this;
 	},
 
 	/**

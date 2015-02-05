@@ -5,7 +5,7 @@
  */
 function State(obj, SM) {
 	//merge all props in obj onto 'this'
-	for(prop in obj) {
+	for(var prop in obj) {
 		if (obj.hasOwnProperty(prop)) {
 			this[prop] = obj[prop];
 		}
