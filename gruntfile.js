@@ -6,7 +6,7 @@ module.exports = function(grunt) {
 		
 		jasmine: {
 			all: {
-				src: ['simple-state-machine.js'],
+				src: ['dist/simple-state-machine.js'],
 				options: {
 					specs: 'test/*.js'
 				}
@@ -16,6 +16,20 @@ module.exports = function(grunt) {
 		jshint: {
 			files: {
 				src: ['*.js']
+			}
+		},
+
+		concat: {
+			files: {
+				src: ['src/*.js'],
+				dest: 'dist/simple-state-machine.js'
+			}
+		},
+
+		watch: {
+			scripts: {
+				files: ['src/*.js'],
+				tasks: ['concat']
 			}
 		},
 
@@ -35,11 +49,16 @@ module.exports = function(grunt) {
 							return next();
 						},
 						// sets root directory to dist folder
-						connect.static(require('path').resolve('./src'))
+						connect.static(require('path').resolve('./dist'))
 					];
 				}
 			}
 		}
 	});
+
+	grunt.registerTask('default', [
+		'concat',
+		'watch'
+	]);
 
 };

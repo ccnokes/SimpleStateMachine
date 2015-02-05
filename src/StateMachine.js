@@ -1,5 +1,3 @@
-(function(window) {
-
 /**
  * SimpleStateMachine constructor
  * @constructor
@@ -14,15 +12,16 @@ function SimpleStateMachine(states) {
 
 	this.initialized = false;
 	this.subscribeQueue = []; //for when we want to subscribe to states before they're initialized
-	this.states = states || [];
+	
+	if(states) {
+		this.setStates(states);	
+	} else {
+		this.states = [];
+	}
+	
+	
 	this.history = [];
 	this.currentState = {};
-
-	//if states are passed into the constructor, assume we want to auto-initialize it
-	if(this.states.length > 0) {
-		this.init();
-	}
-
 }
 
 
@@ -30,20 +29,15 @@ function SimpleStateMachine(states) {
  * Private, handles tracking and history logic
  * @param  {object}
  */
-function trackHistory(stateObj) {
-	//tack number of visits to current state
-	stateObj.visitedCount++;
-
+function trackHistory(stateName) {
 	//track enter and leave times on state object
 	var visitObj = {
 		enterTime: new Date(),
-		stateName: stateObj.name
+		stateName: stateName
 	};
 
 	//track in state machine history, make copy of object (omits functions)
 	this.history.push(visitObj);
-
-	return stateObj;
 }
 
 
@@ -57,10 +51,10 @@ function goToStateInternal(stateObj, optParams) {
 	
 	//call onLeave transitional fn, pass in new state obj
 	if(this.currentState && this.currentState.onLeave) {
-		this.currentState.onLeave(stateObj);
+		this.currentState.deactivate();
 	}
 	
-	trackHistory.call(this, stateObj);
+	trackHistory.call(this, stateObj.name);
 
 	//set to new state
 	this.currentState = stateObj;
@@ -68,7 +62,7 @@ function goToStateInternal(stateObj, optParams) {
 	//call new state's handler fn
 	if(this.currentState.onEnter) {
 		//pass back currentState obj
-		this.currentState.onEnter(this.currentState, optParams);
+		this.currentState.activate(optParams);
 	}
 
 	//call all subscribers to this state
@@ -80,21 +74,37 @@ function goToStateInternal(stateObj, optParams) {
 	}
 }
 
+function createStates(arr) {
+	var self = this;
+
+	//get all state names
+	this.allStateNames = arr.map(function(state) {
+		return state.name;
+	});
+
+	var states = [];
+	arr.forEach(function(item) {
+		//make all states possible by default
+		//fix up any states that use a wildcard
+		if(!item.possibleStates || item.possibleStates[0] === '*') {
+			item.possibleStates = self.allStateNames;
+		}
+		var newState = new State(item, self);
+		states.push(newState);
+	});
+	return states;
+}
+
 
 SimpleStateMachine.prototype = {
 
 	/**
 	 * starts everything in the state machine
 	 */
-	init: function() {
+	start: function() {
 		this.initialized = true;
 
-		//get all state names
-		this.allStateNames = this.states.map(function(state) {
-			return state.name;
-		});
-
-		//wire up subscribers to states that we're deferred until initialization
+		//wire up subscribers to states that were deferred until initialization
 		if(this.subscribeQueue && this.subscribeQueue.length > 0) {
 			var self = this;
 			this.subscribeQueue.forEach(function(item) {
@@ -105,15 +115,6 @@ SimpleStateMachine.prototype = {
 		//start initial state
 		for( var i = 0; i < this.states.length; i++) {			
 			var state = this.states[i];
-			
-			//set meta properties on each state
-			state.visits = [];
-			state.visitedCount = 0;
-			
-			//fix up any states that use a wildcard
-			if(state.possibleStates && state.possibleStates[0] === '*') {
-				state.possibleStates = this.allStateNames;
-			}
 
 			if(state.initial) {
 				goToStateInternal.call(this, state);
@@ -123,10 +124,23 @@ SimpleStateMachine.prototype = {
 
 	/**
 	 * so you can set states later after construction
+	 * @param {Array} states
+	 * @return {Object} this, for chaining
 	 */
 	setStates: function(states) {
-		this.states = states;
-		this.init();
+		this.states = createStates.call(this, states);
+		return this;
+	},
+
+	/**
+	 * add method to each state
+	 * @param  {String} name of function, will overwrite existing if same name
+	 * @param  {Function} function that gets attached to prototype of State
+	 * @return {Object} this, for chaining
+	 */
+	decorateStates: function(name, fn) {
+		State.addMethod(name, fn);
+		return this;
 	},
 
 	/**
@@ -178,6 +192,17 @@ SimpleStateMachine.prototype = {
 	 */
 	getPossibleStates: function() {
 		return this.currentState.possibleStates;
+	},
+
+	/**
+	 * get all states that are disabled or can't be entered
+	 * @return {Array}
+	 */
+	getImpossibleStates: function() {
+		var possibles = this.currentState.possibleStates;
+		return this.allStateNames.filter(function(item){ 
+			return possibles.indexOf(item) === -1; 
+		});
 	},
 
 	/**
@@ -253,17 +278,3 @@ SimpleStateMachine.prototype = {
 		}
 	}
 };
-
-
-//TRANSPORT
-
-if (typeof exports === 'object') {
-	// CommonJS
-	exports = module.exports = SimpleStateMachine;
-} 
-else {
-	// browser global
-	window.SimpleStateMachine = SimpleStateMachine;
-}
-
-})(window);

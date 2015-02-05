@@ -1,56 +1,75 @@
 <html>
+<head>
+	<title>Simple State Machine Test</title>
+	<style>
+		button[disabled] {
+			opacity: 0.2;
+		}
+	</style>
+</head>
 <body>
 
 <h3>Test page for SimpleStateMachine.</h3>
-<p>Current state: <span id="state"></span></p>
+<p>Click on a button to go to that state.</p>
+<p>Current state: <em><span id="state"></span></em></p>
 
-<button class="state-btn" data-state="loading">Loading</button>
-<button class="state-btn" data-state="loggedIn">Log in</button>
-<button class="state-btn" data-state="loggedOut">Log out</button>
+<button class="state-btn" data-state="initial">Initial</button>
+<button class="state-btn" data-state="state 1">State 1</button>
+<button class="state-btn" data-state="state 2">State 2</button>
+<button class="state-btn" data-state="state 3">State 3</button>
 
-<script src="simple-state-machine.js"></script>
+<script src="dist/simple-state-machine.js"></script>
 <script>
 
 var sm = new SimpleStateMachine();
 
-sm.subscribeToState(['*'], function(state) {
-	document.getElementById('state').innerHTML = state.name;
-
-	// var disabledStates = sm.allStateNames.filter(function(item){ 
-	// 	return state.states.indexOf(item) === -1; 
-	// });
-	
-	// disabledStates.forEach(function(name) {
-	// 	document.querySelector('[data-state="'+name+'"]').disabled = true;
-	// });
-});
-
 sm.setStates([
 	{
-		name: 'loading',
+		name: 'initial',
 		initial: true,
-		onEnter: function() { console.log('entered loading'); },
-		onLeave: function() { console.log('left loading'); },
-		possibleStates: [ '*' ]
+		onEnter: function() { console.log('entered ' + this.name); },
+		onLeave: function() { console.log('left ' + this.name); },
+		possibleStates: [ 'state 1' ]
 	},
 	{
-		name: 'loggedIn',
-		onEnter: function() { console.log('entered loggedIn'); },
-		onLeave: function() { console.log('left loggedIn'); },
-		possibleStates: [ 'loggedOut' ]
+		name: 'state 1',
+		onEnter: function() { console.log('entered ' + this.name); },
+		onLeave: function() { console.log('left ' + this.name); },
+		possibleStates: [ 'state 2' ]
 	},
 	{
-		name: 'loggedOut',
-		onEnter: function() { console.log('entered loggedOut'); },
-		onLeave: function() { console.log('left loggedOut'); },
-		possibleStates: [ 'loggedIn' ]
+		name: 'state 2',
+		onEnter: function() { console.log('entered ' + this.name); },
+		onLeave: function() { console.log('left ' + this.name); },
+		possibleStates: [ 'state 3', 'initial' ]
+	},
+	{
+		name: 'state 3',
+		onEnter: function() { console.log('entered ' + this.name); },
+		onLeave: function() { console.log('left ' + this.name); }
 	}
 ]);
 
-//just for fun, log in after 500 ms
-setTimeout(function() {
-	sm.goToState('loggedIn');
-}, 500);
+sm.decorateStates('customFn', function() {
+	//set our state name in the DOM
+	document.getElementById('state').innerHTML = this.name;
+});
+
+sm.subscribeToState(['*'], function(state) {
+	state.customFn(); //call our customFn above
+	
+	//disable un-enterable states' buttons
+	sm.getImpossibleStates().forEach(function(name) {
+		document.querySelector('[data-state="'+name+'"]').disabled = true;
+	});
+
+	//enable button for possibleStates
+	sm.getPossibleStates().forEach(function(name) {
+		document.querySelector('[data-state="'+name+'"]').disabled = false;
+	});
+});
+
+sm.start();
 
 
 function attachButtonEvents() {
@@ -63,6 +82,7 @@ function attachButtonEvents() {
 }
 
 attachButtonEvents();
+
 
 </script>
 </body>

@@ -30,11 +30,22 @@ describe('state-machine', function() {
 		];
 
 		SSM = new SimpleStateMachine(states);
+		SSM.start();
+	});
 
+	afterEach(function() {
+		onEnterMock.calls.reset();
+		onLeaveMock.calls.reset();
+	});
+
+	it('should be defined', function() {
+		expect(SSM).toBeDefined();
+		expect(SSM.states).toBeDefined();
 	});
 
 	it('should start at the initial event', function() {
-		expect( SSM.getCurrentState() ).toEqual(states[0]);
+		var current = SSM.getCurrentState();
+		expect(current.name).toEqual('state1');
 	});
 
 	it('getState should return a state object', function() {
