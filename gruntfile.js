@@ -22,7 +22,12 @@ module.exports = function(grunt) {
 
 		concat: {
 			files: {
-				src: ['src/*.js'],
+				src: [
+					'src/header.js',
+					'src/State.js',
+					'src/StateMachine.js',
+					'src/main.js'
+				],
 				dest: 'dist/simple-state-machine.js'
 			}
 		},
