@@ -1,6 +1,6 @@
 {
   "name": "SimpleStateMachine",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Super simple Javascript state machine. ",
   "main": "simple-state-machine.js",
   "scripts": {
