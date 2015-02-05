@@ -8,7 +8,8 @@ module.exports = function(grunt) {
 			all: {
 				src: ['dist/simple-state-machine.js'],
 				options: {
-					specs: 'test/*.js'
+					helpers: ['test/custom-matchers.js'],
+					specs: 'test/specs/*.js'
 				}
 			}
 		},
@@ -30,6 +31,10 @@ module.exports = function(grunt) {
 			scripts: {
 				files: ['src/*.js'],
 				tasks: ['concat']
+			},
+			tests: {
+				files: ['src/*.js', 'test/**/*.js'],
+				tasks: ['concat', 'jasmine']
 			}
 		},
 
@@ -58,7 +63,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('default', [
 		'concat',
-		'watch'
+		'watch:scripts'
 	]);
 
 };

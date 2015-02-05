@@ -49,7 +49,7 @@ describe('state-machine', function() {
 	});
 
 	it('getState should return a state object', function() {
-		expect( SSM.getState('state2') ).toEqual( states[1] );
+		expect( SSM.getState('state2').name ).toEqual('state2');
 	});
 
 	it('isState should return bool if the current state matches the given state name', function() {
@@ -59,20 +59,24 @@ describe('state-machine', function() {
 	it('getPreviousState should return the previous state', function() {
 		expect( SSM.getPreviousState() ).toEqual(null);
 		SSM.goToState('state2');
-		expect( SSM.getPreviousState() ).toEqual(states[0]);
+		expect( SSM.getPreviousState().name ).toEqual('state1');
 	});
 
 	it('getPossibleStates should return the states the current state can go to', function() {
 		expect( SSM.getPossibleStates() ).toEqual(states[0].possibleStates);
 	});
 
-	it('goToState should change the state only to a state defined in the current state\'s state object', function() {
+	it('getImpossibleStates should return states that can\'t be entered right now', function() {
+		expect( SSM.getImpossibleStates() ).toEqual(['state1', 'state3']);
+	});
+
+	it('goToState should change the state only to a state defined in the current state\'s possibleStates object', function() {
 		SSM.goToState('state2');
-		expect( SSM.getCurrentState() ).toEqual(states[1]);
+		expect( SSM.getCurrentState().name ).toEqual('state2');
 
 		//invalid because we're now on state2, which won't allow us state1
 		SSM.goToState('state1');
-		expect( SSM.getCurrentState() ).toEqual(states[1]);
+		expect( SSM.getCurrentState().name ).toEqual('state2');
 	});
 
 	it('goToState should update history and visitedCount', function() {
@@ -82,9 +86,6 @@ describe('state-machine', function() {
 	});
 
 	it('should call onEnter functions on enter and onLeave functions on leave', function() {
-		onEnterMock.calls.reset();
-		onLeaveMock.calls.reset();
-
 		//state2 has no enter handler
 		SSM.goToState('state2');
 		expect( onLeaveMock ).toHaveBeenCalled();
@@ -146,24 +147,23 @@ describe('state-machine', function() {
 	it('can be initialized without any states', function() {
 		var SM2 = new SimpleStateMachine();
 		expect(SM2).toBeDefined();
-
 		SM2.setStates(states);
-		expect( SM2.getCurrentState().name ).toEqual( SM2.currentState.name );
+		SM2.start();
+		expect( SM2.getCurrentState().name ).toEqual('state1');
 	});
 
 	it('nextState should advance to the next state', function() {
-		expect(SSM.getCurrentState()).toEqual(states[0]);
+		expect(SSM.getCurrentState().name).toEqual('state1');
 		
 		SSM.nextState();
-		expect(SSM.getCurrentState()).toEqual(states[1]);
+		expect(SSM.getCurrentState().name).toEqual('state2');
 		
 		SSM.nextState();
-		expect(SSM.getCurrentState()).toEqual(states[2]);
+		expect(SSM.getCurrentState().name).toEqual('state3');
 		
 		//go to first state if previous one was the last state
 		SSM.nextState();
-		expect(SSM.getCurrentState()).toEqual(states[0]);
+		expect(SSM.getCurrentState().name).toEqual('state1');
 	});
-
 
 });

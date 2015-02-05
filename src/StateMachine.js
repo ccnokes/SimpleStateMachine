@@ -21,7 +21,7 @@ function SimpleStateMachine(states) {
 	
 	
 	this.history = [];
-	this.currentState = {};
+	this.currentState = null;
 }
 
 
@@ -50,7 +50,7 @@ function goToStateInternal(stateObj, optParams) {
 	var self = this;
 	
 	//call onLeave transitional fn, pass in new state obj
-	if(this.currentState && this.currentState.onLeave) {
+	if(this.currentState) {
 		this.currentState.deactivate();
 	}
 	
@@ -59,11 +59,8 @@ function goToStateInternal(stateObj, optParams) {
 	//set to new state
 	this.currentState = stateObj;
 	
-	//call new state's handler fn
-	if(this.currentState.onEnter) {
-		//pass back currentState obj
-		this.currentState.activate(optParams);
-	}
+	this.currentState.activate(optParams);
+	
 
 	//call all subscribers to this state
 	if(this.currentState.subscribers && this.currentState.subscribers.length > 0) {

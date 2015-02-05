@@ -4,14 +4,17 @@
  * @param {Object} parent StateMachine object
  */
 function State(obj, SM) {
+	//merge all props in obj onto 'this'
+	for(prop in obj) {
+		if (obj.hasOwnProperty(prop)) {
+			this[prop] = obj[prop];
+		}
+	}
+
 	this.SM = SM;
 
-	this.name = obj.name;
-	this.onEnter = obj.onEnter;
-	this.onLeave = obj.onLeave;
+	//set defaults
 	this.initial = obj.initial || false;
-	this.possibleStates = obj.possibleStates;
-
 	this.visitedCount = 0;
 
 	if(obj.initial) {
