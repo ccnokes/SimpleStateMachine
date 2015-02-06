@@ -25,7 +25,7 @@ module.exports = function(grunt) {
 
 		jshint: {
 			files: {
-				src: ['*.js']
+				src: ['src/State.js', 'src/StateMachine.js']
 			}
 		},
 
@@ -47,7 +47,7 @@ module.exports = function(grunt) {
 			},
 			target: {
 				files: {
-					'dist/simple-state-machine.js': 'dist/simple-state-machine.js'
+					'dist/simple-state-machine.min.js': 'dist/simple-state-machine.js'
 				}
 			}
 		},
@@ -79,7 +79,8 @@ module.exports = function(grunt) {
 							return next();
 						},
 						// sets root directory to dist folder
-						connect.static(require('path').resolve('./dist'))
+						connect.static(require('path').resolve('./dist')),
+						connect.static(require('path').resolve('./examples'))
 					];
 				}
 			}
@@ -89,7 +90,22 @@ module.exports = function(grunt) {
 	grunt.registerTask('default', [
 		'concat',
 		'uglify',
+		'jshint',
 		'watch:scripts'
 	]);
+
+	grunt.registerTask('build', [
+		'concat',
+		'uglify'
+	]);
+
+	grunt.registerTask('serve', [
+		'concat',
+		'uglify',
+		'watch:scripts',
+		'connect'
+	]);
+
+	grunt.registerTask('test', [ 'concat', 'uglify', 'jasmine' ]);
 
 };

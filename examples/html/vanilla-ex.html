@@ -1,0 +1,26 @@
+<html>
+<head>
+	<title>Simple State Machine Test</title>
+	<link rel="stylesheet" type="text/css" href="../css/styles.css"/>
+</head>
+<body>
+
+	<p>Click on a button to go to that state. Buttons will become enabled if you can enter that state.</p>
+	<hr>
+	<p>
+		Current state: 
+			<strong>
+				<span id="state"></span>
+			</strong>
+	</p>
+
+	<button class="state-btn" data-state="initial">Initial</button>
+	<button class="state-btn" data-state="state 1">State 1</button>
+	<button class="state-btn" data-state="state 2">State 2</button>
+	<button class="state-btn" data-state="state 3">State 3</button>
+
+	<script src="../../dist/simple-state-machine.min.js"></script>
+	<script src="../js/vanilla-ex.js"></script>
+
+</body>
+</html>

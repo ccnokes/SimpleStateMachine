@@ -274,5 +274,6 @@ SimpleStateMachine.prototype = {
 				}
 			});
 		}
+		return this;
 	}
 };

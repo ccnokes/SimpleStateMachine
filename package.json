@@ -4,7 +4,8 @@
   "description": "Super simple Javascript state machine. ",
   "main": "simple-state-machine.js",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "postinstall": "grunt build"
   },
   "repository": {
     "type": "git",

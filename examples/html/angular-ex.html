@@ -1,0 +1,62 @@
+<html ng-app="app">
+<head>
+	<title>Simple State Machine Test</title>
+	<link rel="stylesheet" type="text/css" href="../css/styles.css"/>
+</head>
+<body ng-controller="MainCtrl" ng-cloak>
+
+	<nav class="side-nav">
+		<ul class="plain">
+			<li class="side-nav__item" ng-repeat="nav in navState.states" ng-class="{'is-active': nav.isActive()}">
+				<a ng-click="nav.onClick()">{{nav.name}}</a>
+			</li>
+		</ul>
+	</nav>
+
+	<br><br>
+
+	<div ng-show="navState.isState('Nav 1')">
+		<h3>{{ navState.currentState.name }}</h3>
+		<p>Hey there.</p>
+	</div>
+	<div ng-show="navState.isState('Nav 2')">
+		<h3>{{ navState.currentState.name }}</h3>
+		<p>Why, hello.</p>
+	</div>
+	<div ng-show="navState.isState('Nav 3')">
+		<h3>{{ navState.currentState.name }}</h3>
+		<p>Greetings.</p>
+	</div>
+
+
+	<!-- non state machine version -->
+	<!-- 
+	<hr><br>
+	<nav class="side-nav">
+		<ul class="plain">
+			<li class="side-nav__item" ng-repeat="nav in navItems" ng-class="{'is-active': nav.selected}">
+				<a ng-click="selectNav(nav)">{{nav.name}}</a>
+			</li>
+		</ul>
+	</nav>
+
+	<br><br>
+
+	<div ng-show="selectedNav === 'Nav 1'">
+		<h3>{{ selectedNav }}</h3>
+		<p>Hey there.</p>
+	</div>
+	<div ng-show="selectedNav === 'Nav 2'">
+		<h3>{{ selectedNav }}</h3>
+		<p>Why, hello.</p>
+	</div>
+	<div ng-show="selectedNav === 'Nav 3'">
+		<h3>{{ selectedNav }}</h3>
+		<p>Greetings.</p>
+	</div>
+ 	-->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular.min.js"></script>
+	<script src="../../dist/simple-state-machine.min.js"></script>
+	<script src="../js/angular-ex.js"></script>
+</body>
+</html>

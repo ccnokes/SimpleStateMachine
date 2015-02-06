@@ -1,89 +1,22 @@
 <html>
 <head>
-	<title>Simple State Machine Test</title>
-	<style>
-		button[disabled] {
-			opacity: 0.2;
-		}
-	</style>
+	<title>Simple State Machine Examples</title>
+	<link rel="stylesheet" type="text/css" href="examples/css/styles.css"/>
 </head>
-<body>
+<body class="main-bg">
 
-<h3>Test page for SimpleStateMachine.</h3>
-<p>Click on a button to go to that state.</p>
-<p>Current state: <em><span id="state"></span></em></p>
+	<h1>Simple State Machine Examples</h1>
 
-<button class="state-btn" data-state="initial">Initial</button>
-<button class="state-btn" data-state="state 1">State 1</button>
-<button class="state-btn" data-state="state 2">State 2</button>
-<button class="state-btn" data-state="state 3">State 3</button>
+	<section class="examples">
+		<div>
+			<h3>Vanilla example</h3>
+			<iframe src="examples/html/vanilla-ex.html"></iframe>
+		</div>
+		<div>
+			<h3>Angular example</h3>
+			<iframe src="examples/html/angular-ex.html"></iframe>
+		</div>
+	</section>
 
-<script src="dist/simple-state-machine.js"></script>
-<script>
-
-var sm = new SimpleStateMachine();
-
-sm.setStates([
-	{
-		name: 'initial',
-		initial: true,
-		onEnter: function() { console.log('entered ' + this.name); },
-		onLeave: function() { console.log('left ' + this.name); },
-		possibleStates: [ 'state 1' ]
-	},
-	{
-		name: 'state 1',
-		onEnter: function() { console.log('entered ' + this.name); },
-		onLeave: function() { console.log('left ' + this.name); },
-		possibleStates: [ 'state 2' ]
-	},
-	{
-		name: 'state 2',
-		onEnter: function() { console.log('entered ' + this.name); },
-		onLeave: function() { console.log('left ' + this.name); },
-		possibleStates: [ 'state 3', 'initial' ]
-	},
-	{
-		name: 'state 3',
-		onEnter: function() { console.log('entered ' + this.name); },
-		onLeave: function() { console.log('left ' + this.name); }
-	}
-]);
-
-sm.decorateStates('customFn', function() {
-	//set our state name in the DOM
-	document.getElementById('state').innerHTML = this.name;
-});
-
-sm.subscribeToState(['*'], function(state) {
-	state.customFn(); //call our customFn above
-	
-	//disable un-enterable states' buttons
-	sm.getImpossibleStates().forEach(function(name) {
-		document.querySelector('[data-state="'+name+'"]').disabled = true;
-	});
-
-	//enable button for possibleStates
-	sm.getPossibleStates().forEach(function(name) {
-		document.querySelector('[data-state="'+name+'"]').disabled = false;
-	});
-});
-
-sm.start();
-
-
-function attachButtonEvents() {
-	var buttons = document.getElementsByClassName('state-btn');
-	[].slice.call(buttons).forEach(function(node, i) {
-		node.addEventListener('click', function() {
-			sm.goToState(node.dataset.state);
-		});
-	});
-}
-
-attachButtonEvents();
-
-
-</script>
 </body>
 </html>
