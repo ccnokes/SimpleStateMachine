@@ -15,9 +15,8 @@ module.exports = function(grunt) {
 
 		jasmine: {
 			all: {
-				src: ['dist/simple-state-machine.js'],
+				src: ['src/State.js', 'src/StateMachine.js'],
 				options: {
-					helpers: ['test/custom-matchers.js'],
 					specs: 'test/specs/*.js'
 				}
 			}
@@ -37,7 +36,7 @@ module.exports = function(grunt) {
 					'src/StateMachine.js',
 					'src/main.js'
 				],
-				dest: 'dist/simple-state-machine.js'
+				dest: 'dist/simple-state-machine.min.js'
 			}
 		},
 
@@ -47,7 +46,7 @@ module.exports = function(grunt) {
 			},
 			target: {
 				files: {
-					'dist/simple-state-machine.min.js': 'dist/simple-state-machine.js'
+					'dist/simple-state-machine.min.js': 'dist/simple-state-machine.min.js'
 				}
 			}
 		},
@@ -106,6 +105,6 @@ module.exports = function(grunt) {
 		'connect'
 	]);
 
-	grunt.registerTask('test', [ 'concat', 'uglify', 'jasmine' ]);
+	grunt.registerTask('test', [ 'jasmine' ]);
 
 };
