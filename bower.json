@@ -6,9 +6,12 @@
     "Cameron Nokes <ccnokes@gmail.com>"
   ],
   "description": "Super simple Javascript state machine.",
-  "main": "simple-state-machine.js",
+  "main": "dist/simple-state-machine.min.js",
   "keywords": [
-    "state-machine"
+    "state-machine",
+    "state",
+    "machine",
+    "finite"
   ],
   "license": "MIT",
   "ignore": [

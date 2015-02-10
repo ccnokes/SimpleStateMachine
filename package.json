@@ -2,7 +2,7 @@
   "name": "SimpleStateMachine",
   "version": "1.0.1",
   "description": "Super simple Javascript state machine. ",
-  "main": "simple-state-machine.js",
+  "main": "dist/simple-state-machine.min.js",
   "scripts": {
     "test": "grunt test",
     "postinstall": "grunt build"
@@ -12,7 +12,7 @@
     "url": "https://github.com/ccnokes/SimpleStateMachine.git"
   },
   "keywords": [
-    "state-machine"
+    "state-machine", "state", "machine", "finite"
   ],
   "author": "Cameron Nokes",
   "license": "MIT",
