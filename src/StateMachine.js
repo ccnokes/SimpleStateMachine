@@ -131,13 +131,15 @@ SimpleStateMachine.prototype = {
 	},
 
 	/**
-	 * add method to each state
+	 * add method to each state in this state machine
 	 * @param  {String} name of function, will overwrite existing if same name
-	 * @param  {Function} function that gets attached to prototype of State
+	 * @param  {Function} function that gets attached to each instance of State
 	 * @return {Object} this, for chaining
 	 */
 	decorateStates: function(name, fn) {
-		State.addMethod(name, fn);
+		this.states.forEach(function(state) {
+			state[name] = fn;
+		});
 		return this;
 	},
 

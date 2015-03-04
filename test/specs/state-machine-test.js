@@ -78,6 +78,13 @@ describe('state-machine', function() {
 		expect(onEnterMock).toHaveBeenCalledWith(SSM.getState('state3'), {test: 123});
 	});
 
+	it('decorateStates should add the provided method to each state', function() {
+		var spy = jasmine.createSpy('customFn');
+		SSM.decorateStates('customFn', spy);
+		SSM.getState('state1').customFn();
+		expect(spy).toHaveBeenCalled();
+	});
+
 	it('goToState should change the state only to a state defined in the current state\'s possibleStates object', function() {
 		SSM.goToState('state2');
 		expect( SSM.getCurrentState().name ).toEqual('state2');

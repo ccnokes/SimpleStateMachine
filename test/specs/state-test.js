@@ -27,13 +27,6 @@ describe('State', function() {
 		expect(state.active).toEqual(true);
 	});
 
-	it('addMethod should add a function to the prototype', function() {
-		var mock = jasmine.createSpy('test');
-		State.addMethod('testFn', mock);
-		state.testFn();
-		expect(mock).toHaveBeenCalled();
-	});
-
 	it('activate', function() {
 		state.activate();
 		expect(state.visitedCount).toEqual(1);

@@ -24,15 +24,6 @@ function State(obj, SM) {
 	}
 }
 
-/**
- * Static method that appends function to prototype
- * @param {String} name of fn
- * @param {Function}
- */
-State.addMethod = function(name, fn) {
-	State.prototype[name] = fn;
-};
-
 State.prototype = {
 	/**
 	 * sets this state to active
