@@ -3,6 +3,7 @@ angular.module('app', [])
 
 		/**
 		 * Set up our state machine and expose it to $scope, so it can be templated.
+		 * Note that additional properties unrelated to te StateMachine can be safely added to each state.
 		 */
 		$scope.navState = new SimpleStateMachine()
 			.setStates([
@@ -10,16 +11,19 @@ angular.module('app', [])
 				{ name: 'Nav 2' },
 				{ name: 'Nav 3' }
 			])
+			//we'll call this function in the template on ng-click
 			.decorateStates('onClick', function stateOnClick() {
 				$scope.navState.goToState(this.name);
 			})
 			.start();
 
+		//That's it.
+
 
 
 		/**
 		 * What would an implementation look like without a state machine?
-		 * The above is pretty simple, whereas this implementation: took more time to implement,
+		 * The above is pretty simple, whereas this implementation took more time to implement,
 		 * is harder to read and understand, and is less flexible and portable.
 		 */
 		

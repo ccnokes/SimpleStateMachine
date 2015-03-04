@@ -101,7 +101,6 @@ module.exports = function(grunt) {
 	grunt.registerTask('serve', [
 		'concat',
 		'uglify',
-		'watch:scripts',
 		'connect'
 	]);
 

@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-	//declare our states
+
+	/**
+	 * Declare our states
+	 */
 	var states = [
 		{
 			name: 'initial',
@@ -28,9 +31,22 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	];
 
-	//function that gets called on every state change
-	var onStateChange = function(state) {
-		state.customFn(); //call our customFn defined below
+
+	/**
+	 * implement it all
+	 */
+	var sm = new SimpleStateMachine(states);
+	
+	//add method to each state object
+	//this same functionality could also go in the subscribeToState function below
+	sm.decorateStates('customFn', function() {
+		//set our state name in the DOM
+		document.getElementById('state').innerHTML = this.name;
+	});
+	
+	//call this function on every state change, * matches all
+	sm.subscribeToState(['*'], function(state) {
+		state.customFn(); //call our customFn defined above
 		
 		//disable un-enterable states' buttons
 		sm.getImpossibleStates().forEach(function(name) {
@@ -41,25 +57,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		sm.getPossibleStates().forEach(function(name) {
 			document.querySelector('[data-state="'+name+'"]').disabled = false;
 		});
-	};
-
-	//implement it all
-	var sm = new SimpleStateMachine(states);
-	
-	//add method to each state object
-	sm.decorateStates('customFn', function() {
-		//set our state name in the DOM
-		document.getElementById('state').innerHTML = this.name;
 	});
 	
-	//attach onStateChange to each state, * matches all
-	sm.subscribeToState(['*'], onStateChange);
-	
-	//start it
+	//start it, should be called after setting, subscribing to, and decorating states is done
 	sm.start();
 
 
-	//wire up click events to buttons
+	/**
+	 * wire up click events to buttons so we can see the above code in action in the UI
+	 */
 	function attachButtonEvents() {
 		var buttons = document.getElementsByClassName('state-btn');
 		[].slice.call(buttons).forEach(function(node, i) {
@@ -69,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 		});
 	}
-
 	attachButtonEvents();
+
+
 });

@@ -5,6 +5,8 @@
 </head>
 <body ng-controller="MainCtrl" ng-cloak>
 
+	<p>Click on a nav button to go to that state.</p>
+
 	<nav class="side-nav">
 		<ul class="plain">
 			<li class="side-nav__item" ng-repeat="nav in navState.states" ng-class="{'is-active': nav.isActive()}">
