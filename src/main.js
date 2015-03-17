@@ -1,12 +1,17 @@
 
 //TRANSPORT
 
+// CommonJS
 if (typeof exports === 'object') {
-	// CommonJS
 	exports = module.exports = SimpleStateMachine;
 }
+//Angular
+else if('angular' in window) {
+	angular.module('SimpleStateMachine', [])
+		.value('SimpleStateMachine', SimpleStateMachine);
+}
+// browser global
 else {
-	// browser global
 	window.SimpleStateMachine = SimpleStateMachine;
 }
 

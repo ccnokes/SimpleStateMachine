@@ -1,5 +1,5 @@
-angular.module('app', [])
-	.controller('MainCtrl', [ '$scope', function($scope) {
+angular.module('app', ['SimpleStateMachine'])
+	.controller('MainCtrl', [ '$scope', 'SimpleStateMachine', function($scope, SimpleStateMachine) {
 
 		/**
 		 * Set up our state machine and expose it to $scope, so it can be templated.
@@ -25,6 +25,7 @@ angular.module('app', [])
 		 * What would an implementation look like without a state machine?
 		 * The above is pretty simple, whereas this implementation took more time to implement,
 		 * is harder to read and understand, and is less flexible and portable.
+		 * See angular-ex.html for the HTML of this version as well.
 		 */
 		
 		//declare my states
