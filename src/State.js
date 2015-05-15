@@ -1,17 +1,14 @@
 /**
  * State constructor, should only be called by StateMachine
  * @param {Object} config object
- * @param {Object} parent StateMachine object
  */
-function State(obj, SM) {
+function State(obj) {
 	//merge all props in obj onto 'this'
 	for(var prop in obj) {
 		if (obj.hasOwnProperty(prop)) {
 			this[prop] = obj[prop];
 		}
 	}
-
-	this.SM = SM;
 
 	//set defaults
 	this.initial = obj.initial || false;

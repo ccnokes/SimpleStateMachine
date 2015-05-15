@@ -36,7 +36,15 @@ module.exports = function(grunt) {
 					'src/StateMachine.js',
 					'src/main.js'
 				],
-				dest: 'dist/simple-state-machine.min.js'
+				dest: 'dist/simple-state-machine.js'
+			}
+		},
+
+		copy: {
+			main: {
+				files: [
+					{ src: ['dist/simple-state-machine.js'], dest: 'dist/simple-state-machine.min.js' }
+				]
 			}
 		},
 
@@ -88,6 +96,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('default', [
 		'concat',
+		'copy',
 		'uglify',
 		'jshint',
 		'watch:scripts'

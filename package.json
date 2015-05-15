@@ -12,7 +12,10 @@
     "url": "https://github.com/ccnokes/SimpleStateMachine.git"
   },
   "keywords": [
-    "state-machine", "state", "machine", "finite"
+    "state-machine",
+    "state",
+    "machine",
+    "finite"
   ],
   "author": "Cameron Nokes",
   "license": "MIT",
@@ -25,6 +28,7 @@
     "grunt": "^0.4.5",
     "grunt-connect": "^0.2.0",
     "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-jasmine": "^0.8.1",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "^0.7.0",
