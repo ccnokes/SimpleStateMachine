@@ -30,6 +30,26 @@
 		<p>Greetings.</p>
 	</div>
 
+	<br>
+	<hr>
+	<br>
+
+	<strong>History</strong>
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Time</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="state in navState.history">
+				<td>{{ state.stateName }}</td>
+				<td>{{ state.enterTime | date:'h:mm:ss' }}</td>
+			</tr>
+		</tbody>
+	</table>
+
 
 	<!-- non state machine version -->
 	<!-- 

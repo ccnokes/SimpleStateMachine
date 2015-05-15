@@ -6,13 +6,13 @@ if (typeof exports === 'object') {
 	exports = module.exports = SimpleStateMachine;
 }
 //Angular
-else if('angular' in window) {
+else if('angular' in root) {
 	angular.module('SimpleStateMachine', [])
 		.value('SimpleStateMachine', SimpleStateMachine);
 }
 // browser global
 else {
-	window.SimpleStateMachine = SimpleStateMachine;
+	root.SimpleStateMachine = SimpleStateMachine;
 }
 
-})(window);
+})(((typeof window === 'object' && window) || this));

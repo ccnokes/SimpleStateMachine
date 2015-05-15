@@ -1,4 +1,8 @@
 
+function log(obj) {
+	console.log(JSON.stringify(obj, null, 4));
+}
+
 describe('state-machine', function() {
 	
 	var SSM,
@@ -179,6 +183,16 @@ describe('state-machine', function() {
 		//go to first state if previous one was the last state
 		SSM.nextState();
 		expect(SSM.getCurrentState().name).toEqual('state1');
+	});
+
+	it('don\'t have to have a state with initial:true for it to work', function() {
+		var ssm = new SimpleStateMachine([
+			{ name: '1' },
+			{ name: '2' }
+		]).start();
+		expect(ssm.isState('1')).toEqual(false);
+		ssm.goToState('2');
+		expect(ssm.isState('2')).toEqual(true);
 	});
 
 });

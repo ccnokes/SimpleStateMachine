@@ -156,7 +156,9 @@ SimpleStateMachine.prototype = {
 	 * @return {boolean}
 	 */
 	isState: function(stateName) {
-		return this.getCurrentState().name === stateName;
+		var currentState = this.getCurrentState();
+		//check if currentState exists as this could be called before it's been initialized
+		return !!(currentState && currentState.name === stateName);
 	},
 
 	/**
@@ -178,7 +180,8 @@ SimpleStateMachine.prototype = {
 	 */
 	getState: function(stateName) {
 		var stateToReturn;
-		for(var i = 0; i < this.states.length; i++) {
+		var len = this.states.length;
+		for(var i = 0; i < len; i++) {
 			if(this.states[i].name === stateName) {
 				stateToReturn = this.states[i];
 				break;
@@ -225,12 +228,21 @@ SimpleStateMachine.prototype = {
 	 * transitions to specified state
 	 * @param {string} stateName - state to go to
 	 * @param {object} optParams - optional params to pass to state's onEnter callback
+	 * @return {this}
 	 */
 	goToState: function(stateName, optParams){
-		if(this.currentState.possibleStates.indexOf(stateName) > -1) {
-			var newState = this.getState(stateName);
-			goToStateInternal.call(this, newState, optParams);
+		var toState = this.getState(stateName);
+		if(toState) {
+			//if its the absolute first state, allow it to go anywhere
+			//otherwise, check to see if its possible
+			if(
+				this.currentState === null ||
+				this.currentState.possibleStates.indexOf(stateName) > -1
+			) {
+				goToStateInternal.call(this, toState, optParams);
+			}
 		}
+		return this;
 	},
 
 	/**

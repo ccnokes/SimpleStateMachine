@@ -7,6 +7,10 @@ html {
 	padding: 0.5em;
 }
 
+button {
+	cursor: pointer;
+}
+
 button[disabled] {
 	opacity: 0.2;
 }
@@ -21,7 +25,7 @@ p {
 
 iframe {
 	border: none;
-	height: 300px;
+	height: 450px;
 	width: 100%;
 	background: white;
 }
@@ -62,6 +66,7 @@ iframe {
 .side-nav {
 	border: 1px solid #D9D9D9;
 	background: #ebebeb;
+	-webkit-user-select: none;
 }
 
 .side-nav__item {
@@ -96,4 +101,22 @@ iframe {
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table thead th {
+	font-weight: normal;
+	color: #666;
+	font-size: 0.8em;
+}
+
+table tr td,
+table tr th {
+	border-bottom: 1px solid #ebebeb;
+	padding: 5px 0;
+	text-align: left;
 }

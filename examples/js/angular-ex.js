@@ -7,9 +7,19 @@ angular.module('app', ['SimpleStateMachine'])
 		 */
 		$scope.navState = new SimpleStateMachine()
 			.setStates([
-				{ name: 'Nav 1', initial: true },
-				{ name: 'Nav 2' },
-				{ name: 'Nav 3' }
+				{ 
+					name: 'Nav 1', 
+					initial: true,
+					possibleStates: ['Nav 2', 'Nav 3']
+				},
+				{ 
+					name: 'Nav 2',
+					possibleStates: ['Nav 1', 'Nav 3']
+				},
+				{ 
+					name: 'Nav 3',
+					possibleStates: ['Nav 1', 'Nav 2']
+				}
 			])
 			//we'll call this function in the template on ng-click
 			.decorateStates('onClick', function stateOnClick() {
@@ -26,6 +36,8 @@ angular.module('app', ['SimpleStateMachine'])
 		 * The above is pretty simple, whereas this implementation took more time to implement,
 		 * is harder to read and understand, and is less flexible and portable.
 		 * See angular-ex.html for the HTML of this version as well.
+		 * Note that this version has no way to prevent entering the same state one after another
+		 * and has no history.
 		 */
 		
 		//declare my states
