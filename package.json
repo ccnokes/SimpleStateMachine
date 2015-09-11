@@ -1,5 +1,5 @@
 {
-  "name": "SimpleStateMachine",
+  "name": "simple-statemachine",
   "version": "1.0.4",
   "description": "Super simple Javascript state machine. ",
   "main": "dist/simple-state-machine.min.js",
