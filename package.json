@@ -1,11 +1,10 @@
 {
   "name": "simple-statemachine",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Super simple Javascript state machine. ",
   "main": "dist/simple-state-machine.min.js",
   "scripts": {
-    "test": "grunt test",
-    "postinstall": "grunt build"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
